@@ -32,7 +32,7 @@ issueTrackerURL="${issues_url}" #optional: none
 [[dependencies.${mod_id}]]
   modId="minecraft"
   mandatory=true
-  versionRange="${minecraft_version_range_forge}"
+  versionRange="${minecraft_version_range_neoforge}"
   ordering="NONE" #optional: "NONE"
   side="BOTH" #optional: "BOTH"
 

@@ -31,11 +31,11 @@ public class ProfileListWidget extends ConfigListWidget {
     InputConstants.Key heldKey;
     InputConstants.Key sendKey;
     
-    public ProfileListWidget(Minecraft minecraft, int width, int height, int top, int bottom,
+    public ProfileListWidget(Minecraft minecraft, int width, int height, int y,
                              int itemHeight, int entryRelX, int entryWidth, int entryHeight,
                              int scrollWidth, @NotNull Profile profile,
                              @Nullable Set<CommandKey> expandedKeys) {
-        super(minecraft, width, height, top, bottom, itemHeight, entryRelX,
+        super(minecraft, width, height, y, itemHeight, entryRelX,
                 entryWidth, entryHeight, scrollWidth);
         this.profile = profile;
         this.expandedKeys = (expandedKeys == null) ? new HashSet<>() : expandedKeys;
@@ -81,10 +81,10 @@ public class ProfileListWidget extends ConfigListWidget {
     }
 
     @Override
-    public ConfigListWidget resize(int width, int height, int top, int bottom, 
+    public ConfigListWidget resize(int width, int height, int y, 
                                    int itemHeight, double scrollAmount) {
         ProfileListWidget newListWidget = new ProfileListWidget(
-                minecraft, width, height, top, bottom, itemHeight, entryRelX,
+                minecraft, width, height, y, itemHeight, entryRelX,
                 entryWidth, entryHeight, scrollWidth, profile, expandedKeys);
         newListWidget.setScrollAmount(scrollAmount);
         return newListWidget;
@@ -170,7 +170,7 @@ public class ProfileListWidget extends ConfigListWidget {
         }
         minecraft.setScreen(new ConfigScreen(lastScreen,
                 Component.translatable("screen.commandkeys.title.profiles"),
-                new ProfileSetListWidget(minecraft, screen.width, screen.height, y0, y1,
+                new ProfileSetListWidget(minecraft, screen.width, screen.height, getY(),
                         itemHeight, -180, 360, entryHeight, 380, null)));
     }
 

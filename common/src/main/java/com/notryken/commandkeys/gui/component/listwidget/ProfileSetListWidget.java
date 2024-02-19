@@ -17,10 +17,10 @@ import static com.notryken.commandkeys.CommandKeys.config;
 public class ProfileSetListWidget extends ConfigListWidget {
     Profile editingProfile;
 
-    public ProfileSetListWidget(Minecraft minecraft, int width, int height, int top, int bottom,
+    public ProfileSetListWidget(Minecraft minecraft, int width, int height, int y,
                                 int itemHeight, int entryRelX, int entryWidth, int entryHeight,
                                 int scrollWidth, @Nullable Profile editingProfile) {
-        super(minecraft, width, height, top, bottom, itemHeight, entryRelX,
+        super(minecraft, width, height, y, itemHeight, entryRelX,
                 entryWidth, entryHeight, scrollWidth);
         this.editingProfile = editingProfile;
 
@@ -81,10 +81,10 @@ public class ProfileSetListWidget extends ConfigListWidget {
 
 
     @Override
-    public ConfigListWidget resize(int width, int height, int top, int bottom,
+    public ConfigListWidget resize(int width, int height, int y,
                                    int itemHeight, double scrollAmount) {
         ProfileSetListWidget newListWidget = new ProfileSetListWidget(
-                minecraft, width, height, top, bottom, itemHeight, entryRelX,
+                minecraft, width, height, y, itemHeight, entryRelX,
                 entryWidth, entryHeight, scrollWidth, editingProfile);
         newListWidget.setScrollAmount(scrollAmount);
         return newListWidget;
@@ -115,7 +115,7 @@ public class ProfileSetListWidget extends ConfigListWidget {
                 Component.translatable("screen.commandkeys.title.profile")
                         .append(Component.literal(profile.name))
                         .append(profile.equals(CommandKeys.profile()) ? " [Active]" : " [Inactive]"),
-                new ProfileListWidget(minecraft, screen.width, screen.height, y0, y1,
+                new ProfileListWidget(minecraft, screen.width, screen.height, getY(),
                         itemHeight, -200, 400, entryHeight, 420,
                         profile, null)));
     }
@@ -138,9 +138,20 @@ public class ProfileSetListWidget extends ConfigListWidget {
                 int mainButtonX = x;
 
                 if (inGame) {
-                    Checkbox selectBox = new SelectBox(x, 0,
-                            smallButtonWidth, height, Component.empty(),
-                            profile.equals(CommandKeys.profile()));
+                    Checkbox selectBox = Checkbox.builder(Component.empty(),
+                            Minecraft.getInstance().font)
+                            .pos(x, 0)
+                            .selected(profile.equals(CommandKeys.profile()))
+                            .onValueChange((checkbox, value) -> {
+                                if (value) {
+                                    if (CommandKeys.activeAddress() instanceof InetSocketAddress netAddress) {
+                                        profile.forceAddAddress(netAddress.getHostName());
+                                    }
+                                    config().setActiveProfile(profile);
+                                    listWidget.reload();
+                                }
+                            })
+                            .build();
                     selectBox.setTooltip(Tooltip.create(Component.literal("Use this profile")));
                     selectBox.setTooltipDelay(500);
                     elements.add(selectBox);
@@ -243,21 +254,6 @@ public class ProfileSetListWidget extends ConfigListWidget {
                 deleteButton.setTooltipDelay(500);
                 deleteButton.active = !isDefault;
                 elements.add(deleteButton);
-            }
-
-            private class SelectBox extends Checkbox {
-                public SelectBox(int x, int y, int width, int height, Component message, boolean selected) {
-                    super(x, y, width, height, message, selected, false);
-                }
-
-                @Override
-                public void onPress() {
-                    if (CommandKeys.activeAddress() instanceof InetSocketAddress netAddress) {
-                        profile.forceAddAddress(netAddress.getHostName());
-                    }
-                    config().setActiveProfile(profile);
-                    listWidget.reload();
-                }
             }
         }
 

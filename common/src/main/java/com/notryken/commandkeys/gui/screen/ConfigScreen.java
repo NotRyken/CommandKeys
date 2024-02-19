@@ -1,7 +1,9 @@
 package com.notryken.commandkeys.gui.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.notryken.commandkeys.CommandKeys;
 import com.notryken.commandkeys.gui.component.listwidget.ConfigListWidget;
+import com.notryken.commandkeys.gui.component.listwidget.ProfileListWidget;
 import com.notryken.commandkeys.gui.component.listwidget.ProfileSetListWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,11 +12,7 @@ import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import com.notryken.commandkeys.CommandKeys;
-import com.notryken.commandkeys.gui.component.listwidget.ProfileListWidget;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 /**
  * A {@code ConfigScreen} contains one tightly-coupled {@code ConfigListWidget},
@@ -25,7 +23,7 @@ public class ConfigScreen extends OptionsSubScreen {
     protected ConfigListWidget listWidget;
 
     public final int listTop = 32;
-    public final Supplier<Integer> listBottom = () -> height - 32;
+    public final int bottomMargin = 32;
     public final int listItemHeight = 25;
 
     public ConfigScreen(Screen lastScreen, boolean inGame) {
@@ -34,12 +32,12 @@ public class ConfigScreen extends OptionsSubScreen {
                         .append(Component.literal(CommandKeys.profile().name)) :
                         Component.translatable("screen.commandkeys.title.profiles"));
         if (inGame) {
-            listWidget = new ProfileListWidget(Minecraft.getInstance(), 0, 0, 0, 0,
+            listWidget = new ProfileListWidget(Minecraft.getInstance(), 0, 0, 0,
                     0, -200, 400, 20, 420,
                     CommandKeys.profile(), null);
         }
         else {
-            listWidget = new ProfileSetListWidget(Minecraft.getInstance(), 0, 0, 0, 0,
+            listWidget = new ProfileSetListWidget(Minecraft.getInstance(), 0, 0, 0,
                     0, -180, 360, 20, 380, null);
         }
 
@@ -52,7 +50,8 @@ public class ConfigScreen extends OptionsSubScreen {
 
     @Override
     protected void init() {
-        listWidget = listWidget.resize(width, height, listTop, listBottom.get(), listItemHeight, listWidget.getScrollAmount());
+        listWidget = listWidget.resize(width, height - listTop - bottomMargin, listTop,
+                listItemHeight, listWidget.getScrollAmount());
         listWidget.setScreen(this);
         addRenderableWidget(listWidget);
         addRenderableWidget(Button.builder(CommonComponents.GUI_DONE,
