@@ -231,7 +231,8 @@ public class ProfileListWidget extends ConfigListWidget {
                 int movingX = x;
 
                 ImageButton collapseButton = new ImageButton(movingX, 0, smallButtonWidth, height,
-                        0, 0, 20, ConfigListWidget.Entry.COLLAPSE_ICON, 32, 64,
+                        new WidgetSprites(COLLAPSE_ICON, COLLAPSE_DISABLED_ICON,
+                                COLLAPSE_HIGHLIGHTED_ICON),
                         (button) -> {
                             listWidget.expandedKeys.remove(commandKey);
                             listWidget.reload();

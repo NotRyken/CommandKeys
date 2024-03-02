@@ -181,7 +181,8 @@ public class ProfileSetListWidget extends ConfigListWidget {
                 int movingX = x + width - smallButtonWidth * 5 - spacing * 4;
 
                 ImageButton configureButton = new ImageButton(movingX, 0, smallButtonWidth, height,
-                        0, 0, 20, CONFIGURE_ICON, 32, 64,
+                        new WidgetSprites(CONFIGURE_ICON, CONFIGURE_DISABLED_ICON,
+                                CONFIGURE_HIGHLIGHTED_ICON),
                         (button) -> listWidget.openProfileScreen(profile),
                         Component.empty());
                 elements.add(configureButton);
@@ -218,7 +219,8 @@ public class ProfileSetListWidget extends ConfigListWidget {
                 movingX += smallButtonWidth + spacing;
 
                 ImageButton copyButton = new ImageButton(movingX, 0, smallButtonWidth, height,
-                        0, 0, 20, COPY_ICON, 32, 64,
+                        new WidgetSprites(COPY_ICON, COPY_DISABLED_ICON,
+                                COPY_HIGHLIGHTED_ICON),
                         (button) -> {
                             config().copyProfile(profile);
                             listWidget.reload();
